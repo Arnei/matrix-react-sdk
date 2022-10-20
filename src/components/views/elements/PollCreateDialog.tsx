@@ -51,6 +51,7 @@ interface IState extends IScrollableBaseState {
     question: string;
     options: string[];
     busy: boolean;
+    max_selections: number;
     kind: KNOWN_POLL_KIND;
     autoFocusTarget: FocusTarget;
 }
@@ -69,6 +70,7 @@ function creatingInitialState(): IState {
         question: "",
         options: arraySeed("", DEFAULT_NUM_OPTIONS),
         busy: false,
+        max_selections: 2,
         kind: M_POLL_KIND_DISCLOSED,
         autoFocusTarget: FocusTarget.Topic,
     };
@@ -85,6 +87,7 @@ function editingInitialState(editingMxEvent: MatrixEvent): IState {
         question: poll.question.text,
         options: poll.answers.map(ans => ans.text),
         busy: false,
+        max_selections: poll.maxSelections,
         kind: poll.kind,
         autoFocusTarget: FocusTarget.Topic,
     };
