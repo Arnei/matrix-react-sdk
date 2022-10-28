@@ -70,7 +70,9 @@ function creatingInitialState(): IState {
         question: "",
         options: arraySeed("", DEFAULT_NUM_OPTIONS),
         busy: false,
-        max_selections: 2,
+        max_selections: 2, // temporarily set to 2 for testing
+        // in production, this would need to be customizable by the poll creator
+        // and be limited by the number of available options
         kind: M_POLL_KIND_DISCLOSED,
         autoFocusTarget: FocusTarget.Topic,
     };
@@ -146,6 +148,7 @@ export default class PollCreateDialog extends ScrollableBaseModal<IProps, IState
             this.state.question.trim(),
             this.state.options.map(a => a.trim()).filter(a => !!a),
             this.state.kind,
+            this.state.max_selections,
         ).serialize();
 
         if (!this.props.editingMxEvent) {
