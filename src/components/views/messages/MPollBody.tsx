@@ -31,7 +31,6 @@ import {
     PollStartEvent,
 } from "matrix-events-sdk";
 import { RelatedRelations } from "matrix-js-sdk/src/models/related-relations";
-import { isNullOrUndefined } from 'matrix-js-sdk/src/utils';
 
 import { _t } from '../../../languageHandler';
 import Modal from '../../../Modal';
@@ -221,25 +220,13 @@ export default class MPollBody extends React.Component<IBodyProps, IState> {
 
         this.state = {
             selected: null,
-            selections: null, // should hold answerIds if existent
+            selections: [], // should hold answerIds if existent
             voteRelations: this.fetchVoteRelations(),
             endRelations: this.fetchEndRelations(),
         };
 
         this.addListeners(this.state.voteRelations, this.state.endRelations);
         this.props.mxEvent.on(MatrixEventEvent.RelationsCreated, this.onRelationsCreated);
-    }
-
-    componentDidMount(): void {
-        // this doesn't work reliably and it's quite hard to understand under which conditions it does
-        if (isNullOrUndefined(this.state.selections)) {
-            this.setState({ selections: [] });
-            return;
-        }
-        const userVotes = this.collectUserVotes();
-        const userId = this.context.getUserId();
-        const myVotes = userVotes.get(userId)?.answers;
-        this.setState({ selections: myVotes });
     }
 
     componentWillUnmount() {
@@ -352,20 +339,28 @@ export default class MPollBody extends React.Component<IBodyProps, IState> {
         if (this.isEnded()) {
             return;
         }
-        const poll = this.props.mxEvent.unstableExtensibleEvent as PollStartEvent;
-        const newSelections = this.state.selections;
 
-        if (!newSelections.includes(answerId) && newSelections.length < poll.maxSelections) {
-            newSelections.push(answerId);
+        const userVotes = this.collectUserVotes();
+        const userId = this.context.getUserId();
+        const myVotes = userVotes.get(userId)?.answers ?? [];
+
+        const poll = this.props.mxEvent.unstableExtensibleEvent as PollStartEvent;
+
+        if (!myVotes.includes(answerId) && myVotes.length < poll.maxSelections) {
+            myVotes.push(answerId);
         } else {
             // deselect
+            const index = myVotes.indexOf(answerId, 0);
+            if (index > -1) {
+                myVotes.splice(index, 1);
+            }
         }
 
-        const response = PollResponseEvent.from(newSelections, this.props.mxEvent.getId()).serialize();
+        const response = PollResponseEvent.from(myVotes, this.props.mxEvent.getId()).serialize();
 
         this.sendContextEvent(response);
 
-        this.setState({ selections: newSelections });
+        this.setState({ selections: myVotes });
     };
 
     private onMultiSelection = (e: React.FormEvent<HTMLInputElement>): void => {
