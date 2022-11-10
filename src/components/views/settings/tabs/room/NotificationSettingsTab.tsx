@@ -215,6 +215,23 @@ export default class NotificationsSettingsTab extends React.Component<IProps, IS
                                     </div>
                                 </>,
                             }, {
+                                value: RoomNotifState.NameAndKeywordsOnly,
+                                className: "mx_NotificationSettingsTab_mentionsKeywordsEntry",
+                                label: <>
+                                    { _t("name & keywords") }
+                                    <div className="mx_NotificationSettingsTab_microCopy">
+                                        { _t("Get notified only with name and keywords " +
+                                            "as set up in your <a>settings</a>", {}, {
+                                            a: sub => <AccessibleButton
+                                                kind="link_inline"
+                                                onClick={this.onOpenSettingsClick}
+                                            >
+                                                { sub }
+                                            </AccessibleButton>,
+                                        }) }
+                                    </div>
+                                </>,
+                            }, {
                                 value: RoomNotifState.MentionsOnly,
                                 className: "mx_NotificationSettingsTab_mentionsKeywordsEntry",
                                 label: <>

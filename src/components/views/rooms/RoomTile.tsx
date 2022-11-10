@@ -285,6 +285,7 @@ export default class RoomTile extends React.PureComponent<IProps, IState> {
             // Show bell icon for the default case too.
             mx_RoomNotificationContextMenu_iconBell: state === RoomNotifState.AllMessages,
             mx_RoomNotificationContextMenu_iconBellDot: state === RoomNotifState.AllMessagesLoud,
+            mx_RoomNotificationContextMenu_iconBellNameAndKeyword: state === RoomNotifState.NameAndKeywordsOnly,
             mx_RoomNotificationContextMenu_iconBellMentions: state === RoomNotifState.MentionsOnly,
             mx_RoomNotificationContextMenu_iconBellCrossed: state === RoomNotifState.Mute,
 

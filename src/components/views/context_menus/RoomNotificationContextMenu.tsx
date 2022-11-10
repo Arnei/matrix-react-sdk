@@ -67,6 +67,13 @@ export const RoomNotificationContextMenu = ({ room, onFinished, ...props }: IPro
         onClick={wrapHandler(() => setNotificationState(RoomNotifState.AllMessagesLoud))}
     />;
 
+    const nameandKeywordsOption: JSX.Element = <IconizedContextMenuRadio
+        label={_t("Name & Keywords")}
+        active={notificationState === RoomNotifState.NameAndKeywordsOnly}
+        iconClassName="mx_RoomNotificationContextMenu_iconBellMentions"
+        onClick={wrapHandler(() => setNotificationState(RoomNotifState.NameAndKeywordsOnly))}
+    />;
+
     const mentionsOption: JSX.Element = <IconizedContextMenuRadio
         label={_t("Mentions & Keywords")}
         active={notificationState === RoomNotifState.MentionsOnly}
@@ -90,6 +97,7 @@ export const RoomNotificationContextMenu = ({ room, onFinished, ...props }: IPro
         <IconizedContextMenuOptionList first>
             { defaultOption }
             { allMessagesOption }
+            { nameandKeywordsOption }
             { mentionsOption }
             { muteOption }
         </IconizedContextMenuOptionList>

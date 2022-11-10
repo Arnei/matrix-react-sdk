@@ -32,6 +32,7 @@ export enum RoomNotifState {
     AllMessagesLoud = 'all_messages_loud',
     AllMessages = 'all_messages',
     MentionsOnly = 'mentions_only',
+    NameAndKeywordsOnly = 'name_and_keywords_only',
     Mute = 'mute',
 }
 
@@ -59,6 +60,11 @@ export function getRoomNotifsState(roomId: string): RoomNotifState {
     // (in particular this will be 'wrong' for one to one rooms because
     // they will notify loudly for all messages)
     if (!roomRule?.enabled) return RoomNotifState.AllMessages;
+
+    // HACK
+    if (isMuteRule(roomRule) && roomRule.conditions && roomRule.conditions.length >= 1 && roomRule.conditions[0].kind === ConditionKind.ContainsDisplayName) {
+        return RoomNotifState.NameAndKeywordsOnly;
+    }
 
     // a mute at the room level will still allow mentions
     // to notify
@@ -145,6 +151,21 @@ function setRoomNotifsStateUnmuted(roomId: string, newState: RoomNotifState): Pr
         if (roomRule) {
             promises.push(cli.deletePushRule('global', PushRuleKind.RoomSpecific, roomRule.rule_id));
         }
+    } else if (newState === RoomNotifState.NameAndKeywordsOnly) {
+        promises.push(cli.addPushRule('global', PushRuleKind.RoomSpecific, roomId, {
+            conditions: [
+                {
+                    kind: ConditionKind.ContainsDisplayName,
+                    key: 'room_id',
+                    pattern: roomId,
+                },
+            ],
+            actions: [
+                PushRuleActionName.DontNotify,
+            ],
+        }));
+        // https://matrix.org/jira/browse/SPEC-400
+        promises.push(cli.setPushRuleEnabled('global', PushRuleKind.RoomSpecific, roomId, true));
     } else if (newState === RoomNotifState.MentionsOnly) {
         promises.push(cli.addPushRule('global', PushRuleKind.RoomSpecific, roomId, {
             actions: [

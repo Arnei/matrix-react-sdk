@@ -168,6 +168,10 @@ const RoomContextMenu = ({ room, onFinished, ...props }: IProps) => {
                 notificationLabel = _t("All messages");
                 iconClassName = "mx_RoomTile_iconNotificationsAllMessages";
                 break;
+            case RoomNotifState.NameAndKeywordsOnly:
+                notificationLabel = _t("NameAndKeywordsOnly only");
+                iconClassName = "mx_RoomTile_iconNotificationsMentionsKeywords";
+                break;
             case RoomNotifState.MentionsOnly:
                 notificationLabel = _t("Mentions only");
                 iconClassName = "mx_RoomTile_iconNotificationsMentionsKeywords";

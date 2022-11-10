@@ -68,6 +68,7 @@ export function RoomResultContextMenus({ room }: Props) {
         // Show bell icon for the default case too.
         mx_RoomNotificationContextMenu_iconBell: notificationState === RoomNotifState.AllMessages,
         mx_RoomNotificationContextMenu_iconBellDot: notificationState === RoomNotifState.AllMessagesLoud,
+        mx_RoomNotificationContextMenu_iconBellNameAndKeyword: notificationState === RoomNotifState.NameAndKeywordsOnly,
         mx_RoomNotificationContextMenu_iconBellMentions: notificationState === RoomNotifState.MentionsOnly,
         mx_RoomNotificationContextMenu_iconBellCrossed: notificationState === RoomNotifState.Mute,
     });
